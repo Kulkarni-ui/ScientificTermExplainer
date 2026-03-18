@@ -8,10 +8,6 @@ app = Flask(
     static_folder="../static"
 )
 
-client = Groq(
-    api_key=os.environ.get("GROQ_API_KEY")
-)
-
 
 @app.route("/")
 def home():
@@ -28,6 +24,11 @@ def explain():
     prompt = f"Explain {term} in simple {lang} language"
 
     try:
+
+        client = Groq(
+            api_key=os.environ.get("GROQ_API_KEY")
+        )
+
         chat = client.chat.completions.create(
             model="llama3-70b-8192",
             messages=[{"role": "user", "content": prompt}]
