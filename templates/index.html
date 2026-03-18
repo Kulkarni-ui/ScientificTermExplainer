@@ -23,23 +23,23 @@
 
         <select id="langSelect">
 
-            <option value="en">English</option>
-            <option value="kn">Kannada</option>
-            <option value="bn">Bengali</option>
-            <option value="hi">Hindi</option>
-            <option value="mr">Marathi</option>
-            <option value="ta">Tamil</option>
-            <option value="fr">French</option>
-            <option value="de">German</option>
-            <option value="es">Spanish</option>
-            <option value="ja">Japanese</option>
-            <option value="zh">Chinese</option>
-            <option value="ar">Arabic</option>
-            <option value="ru">Russian</option>
-            <option value="ko">Korean</option>
-            <option value="it">Italian</option>
-            <option value="pt">Portuguese</option>
-            <option value="tr">Turkish</option>
+            <option value="English">English</option>
+            <option value="Kannada">Kannada</option>
+            <option value="Bengali">Bengali</option>
+            <option value="Hindi">Hindi</option>
+            <option value="Marathi">Marathi</option>
+            <option value="Tamil">Tamil</option>
+            <option value="French">French</option>
+            <option value="German">German</option>
+            <option value="Spanish">Spanish</option>
+            <option value="Japanese">Japanese</option>
+            <option value="Chinese">Chinese</option>
+            <option value="Arabic">Arabic</option>
+            <option value="Russian">Russian</option>
+            <option value="Korean">Korean</option>
+            <option value="Italian">Italian</option>
+            <option value="Portuguese">Portuguese</option>
+            <option value="Turkish">Turkish</option>
 
         </select>
 
@@ -72,67 +72,78 @@ async function getExplanation() {
         return;
     }
 
-    const currentScroll = window.scrollY;
-
-    resultDiv.style.opacity = "0.5";
+    resultDiv.innerHTML = "Loading...";
 
     try {
 
         const response = await fetch("/api/explain", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ term, lang })
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                term: term,
+                lang: lang
+            })
         });
 
         const data = await response.json();
 
         if (data.error) {
-            resultDiv.innerHTML = `<p>${data.error}</p>`;
+            resultDiv.innerHTML = data.error;
             return;
         }
 
         resultDiv.innerHTML = `
             <div class="result">
+
                 <h2>${data.term}</h2>
+
                 <p>${data.explanation}</p>
 
                 <h3>Real World Example</h3>
                 <p>${data.example}</p>
 
                 <h3>Related Terms</h3>
+
                 <div class="related-terms">
-                    ${data.related_terms.map(term => 
-                        `<button onclick="searchRelated('${term}')">${term}</button>`
+                    ${data.related_terms.map(t =>
+                        `<button onclick="searchRelated('${t}')">${t}</button>`
                     ).join("")}
                 </div>
+
             </div>
 
             <div class="json-box">
-                <h3>JSON Response:</h3>
-                <pre class="json-pre">
+
+                <h3>JSON Response</h3>
+
+                <pre>
 ${formatJSON(data)}
                 </pre>
+
             </div>
         `;
 
-        resultDiv.style.opacity = "1";
-
-        window.scrollTo(0, currentScroll);
-
     } catch (error) {
-        resultDiv.innerHTML = "<p>Error generating explanation.</p>";
+
+        resultDiv.innerHTML =
+            "Error generating explanation.";
+
     }
 }
 
-// ---------------- RELATED SEARCH ----------------
-function searchRelated(term) {
 
-    term = term.trim();
+// ---------------- RELATED ----------------
+
+function searchRelated(term) {
 
     document.getElementById("termInput").value = term;
 
     getExplanation();
 }
+
 </script>
+
 </body>
 </html>

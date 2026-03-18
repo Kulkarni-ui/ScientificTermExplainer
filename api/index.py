@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 import os
 from groq import Groq
+import json
 
 app = Flask(
     __name__,
@@ -21,7 +22,18 @@ def explain():
     term = data.get("term")
     lang = data.get("lang")
 
-    prompt = f"Explain {term} in simple {lang} language"
+    prompt = f"""
+Explain the scientific term "{term}" in {lang} language.
+
+Return ONLY JSON in this format:
+
+{{
+"term": "",
+"explanation": "",
+"example": "",
+"related_terms": ["", "", ""]
+}}
+"""
 
     try:
 
@@ -34,12 +46,24 @@ def explain():
             messages=[{"role": "user", "content": prompt}]
         )
 
-        result = chat.choices[0].message.content
+        text = chat.choices[0].message.content
 
-        return jsonify({"result": result})
+        # try to parse JSON from model
+        try:
+            result_json = json.loads(text)
+        except:
+            result_json = {
+                "term": term,
+                "explanation": text,
+                "example": "",
+                "related_terms": []
+            }
+
+        return jsonify(result_json)
 
     except Exception as e:
-        return jsonify({"result": "Error generating explanation"})
-
-
+        print(e)
+        return jsonify({
+            "error": "Error generating explanation"
+        })
 app = app
