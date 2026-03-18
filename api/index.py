@@ -31,7 +31,7 @@ def explain():
         return jsonify({"error": "API key missing"})
 
     prompt = f"""
-Explain "{term}" in {lang}.
+Explain "{term}" in {lang}
 
 Return JSON:
 {{
@@ -69,4 +69,5 @@ Return JSON:
         return jsonify({"error": str(e)})
 
 
-handler = app
+# ✅ THIS LINE FIXES VERCEL CRASH
+app = app
