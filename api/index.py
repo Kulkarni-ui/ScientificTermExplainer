@@ -10,17 +10,29 @@ app = Flask(
 )
 
 
+# ---------------- HOME ----------------
+
 @app.route("/")
 def home():
     return render_template("index.html")
 
 
+# ---------------- API ----------------
+
 @app.route("/api/explain", methods=["POST"])
 def explain():
 
     data = request.json
+
     term = data.get("term")
     lang = data.get("lang")
+
+    key = os.environ.get("GROQ_API_KEY")
+
+    if not key:
+        return jsonify({
+            "error": "API key missing"
+        })
 
     prompt = f"""
 Explain the scientific term "{term}" in {lang} language.
@@ -37,33 +49,38 @@ Return ONLY JSON in this format:
 
     try:
 
-        client = Groq(
-            api_key=os.environ.get("GROQ_API_KEY")
-        )
+        client = Groq(api_key=key)
 
         chat = client.chat.completions.create(
             model="llama3-70b-8192",
-            messages=[{"role": "user", "content": prompt}]
+            messages=[
+                {"role": "user", "content": prompt}
+            ]
         )
 
         text = chat.choices[0].message.content
 
-        # try to parse JSON from model
+        # Try parsing JSON
         try:
-            result_json = json.loads(text)
+            result = json.loads(text)
         except:
-            result_json = {
+            result = {
                 "term": term,
                 "explanation": text,
                 "example": "",
                 "related_terms": []
             }
 
-        return jsonify(result_json)
+        return jsonify(result)
 
     except Exception as e:
-        print(e)
+
+        print("ERROR:", e)
+
         return jsonify({
             "error": "Error generating explanation"
         })
-app = app
+
+
+# IMPORTANT FOR VERCEL
+handler = app
