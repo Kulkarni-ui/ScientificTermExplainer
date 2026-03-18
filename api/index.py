@@ -3,21 +3,19 @@ import os
 from groq import Groq
 import json
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 app = Flask(
     __name__,
-    template_folder="../templates",
-    static_folder="../static"
+    template_folder=os.path.join(BASE_DIR, "templates"),
+    static_folder=os.path.join(BASE_DIR, "static"),
 )
 
-
-# ---------------- HOME ----------------
 
 @app.route("/")
 def home():
     return render_template("index.html")
 
-
-# ---------------- API ----------------
 
 @app.route("/api/explain", methods=["POST"])
 def explain():
@@ -30,20 +28,17 @@ def explain():
     key = os.environ.get("GROQ_API_KEY")
 
     if not key:
-        return jsonify({
-            "error": "API key missing"
-        })
+        return jsonify({"error": "API key missing"})
 
     prompt = f"""
-Explain the scientific term "{term}" in {lang} language.
+Explain "{term}" in {lang}.
 
-Return ONLY JSON in this format:
-
+Return JSON:
 {{
-"term": "",
-"explanation": "",
-"example": "",
-"related_terms": ["", "", ""]
+"term":"",
+"explanation":"",
+"example":"",
+"related_terms":[]
 }}
 """
 
@@ -53,14 +48,11 @@ Return ONLY JSON in this format:
 
         chat = client.chat.completions.create(
             model="llama3-70b-8192",
-            messages=[
-                {"role": "user", "content": prompt}
-            ]
+            messages=[{"role": "user", "content": prompt}]
         )
 
         text = chat.choices[0].message.content
 
-        # Try parsing JSON
         try:
             result = json.loads(text)
         except:
@@ -74,13 +66,7 @@ Return ONLY JSON in this format:
         return jsonify(result)
 
     except Exception as e:
-
-        print("ERROR:", e)
-
-        return jsonify({
-            "error": "Error generating explanation"
-        })
+        return jsonify({"error": str(e)})
 
 
-# IMPORTANT FOR VERCEL
 handler = app
