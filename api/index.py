@@ -1,8 +1,9 @@
 from flask import Flask, render_template, request, jsonify
 import os
-from groq import Groq
 import json
+from groq import Groq
 
+# Fix template path for Vercel
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 app = Flask(
@@ -12,11 +13,13 @@ app = Flask(
 )
 
 
+# Home page
 @app.route("/")
 def home():
     return render_template("index.html")
 
 
+# API
 @app.route("/api/explain", methods=["POST"])
 def explain():
 
@@ -30,10 +33,12 @@ def explain():
     if not key:
         return jsonify({"error": "API key missing"})
 
-    prompt = f"""
-Explain "{term}" in {lang}
 
-Return JSON:
+    prompt = f"""
+Explain the scientific term "{term}" in {lang}.
+
+Return ONLY JSON:
+
 {{
 "term":"",
 "explanation":"",
@@ -42,13 +47,16 @@ Return JSON:
 }}
 """
 
+
     try:
 
         client = Groq(api_key=key)
 
         chat = client.chat.completions.create(
-            model="llama3-70b-8192",
-            messages=[{"role": "user", "content": prompt}]
+            model="llama-3.1-8b-instant",
+            messages=[
+                {"role": "user", "content": prompt}
+            ]
         )
 
         text = chat.choices[0].message.content
@@ -66,8 +74,10 @@ Return JSON:
         return jsonify(result)
 
     except Exception as e:
-        return jsonify({"error": str(e)})
+        return jsonify({
+            "error": str(e)
+        })
 
 
-# ✅ THIS LINE FIXES VERCEL CRASH
+# IMPORTANT for Vercel
 app = app
