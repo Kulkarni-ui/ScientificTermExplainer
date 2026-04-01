@@ -12,17 +12,17 @@ An AI-powered web app that explains scientific terms in plain language — with 
 
 ---
 
-## ✨ Features
+##  Features
 
 * 🤖 **AI-Powered Explanations** — Generates clear and accurate explanations using Groq LLM
 * 🌍 **Multilingual Support (17 Languages)** — Includes English, Hindi, Kannada, Tamil, French, Spanish, Japanese, Arabic, and more
-* 💡 **Real-World Examples** — Helps users understand concepts practically
-* 🔗 **Related Concepts** — Suggests connected topics for deeper learning
-* ⚡ **High Performance** — Uses Groq’s fast inference API for quick responses
+*  **Real-World Examples** — Helps users understand concepts practically
+*  **Related Concepts** — Suggests connected topics for deeper learning
+*  **High Performance** — Uses Groq’s fast inference API for quick responses
 
 ---
 
-## 🧠 How It Works
+##  How It Works
 
 1. User enters a scientific term in the input field
 2. Frontend sends request to Flask backend
@@ -36,7 +36,7 @@ An AI-powered web app that explains scientific terms in plain language — with 
 
 ---
 
-## 🧪 Example
+##  Example
 
 **Input:** Photosynthesis
 
@@ -45,13 +45,13 @@ Photosynthesis is the process by which plants convert sunlight into chemical ene
 
 ---
 
-## 🚀 Tech Stack
+## Tech Stack
 
 `Python` · `Flask` · `Groq API` · `HTML` · `CSS` · `JavaScript` · `Vercel`
 
 ---
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 ├── api/            # Flask API / serverless functions
@@ -63,9 +63,9 @@ Photosynthesis is the process by which plants convert sunlight into chemical ene
 
 ---
 
-## ⚙️ Getting Started
+##  Getting Started
 
-### 🔧 Prerequisites
+###  Prerequisites
 
 * Python 3.8+
 * Groq API Key → https://console.groq.com
@@ -111,14 +111,14 @@ vercel
 
 ## 🚀 Uniqueness
 
-* 🌍 Supports **17 languages** for scientific explanations
-* 🧠 Combines explanation + examples + related concepts in one response
-* ⚡ Uses **Groq API** for ultra-fast inference
-* 🎯 Focuses on **simplifying complex scientific terms for beginners**
+*  Supports **17 languages** for scientific explanations
+*  Combines explanation + examples + related concepts in one response
+*  Uses **Groq API** for ultra-fast inference
+*  Focuses on **simplifying complex scientific terms for beginners**
 
 ---
 
-## 🔮 Future Enhancements
+##  Future Enhancements
 
 * 🎤 Voice input support
 * 📷 Image-based term recognition
